@@ -1,0 +1,12 @@
+*/History/*
+*/Project Logs*
+*/Project Outputs*
+*/__Previews/*
+build*
+debug*
+release*
+Makefile*
+.qmake*
+object*
+ui_*
+*.user*
