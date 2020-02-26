@@ -22,29 +22,29 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 #include <string.h>
 
 #include <stdio.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <stdlib.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
-#include <toolkit/tlist.h>
 #include <fileref.h>
-#include <tfile.h>
 #include <tag.h>
+#include <tfile.h>
+#include <toolkit/tlist.h>
 #include <tpropertymap.h>
 
-#include <string>
-#include <iostream>
 #include <experimental/filesystem>
+#include <iostream>
+#include <string>
 
-#include <qstring.h>
-#include <qdebug.h>
-#include <qtextcodec.h>
 #include <QVector>
+#include <qdebug.h>
+#include <qstring.h>
+#include <qtextcodec.h>
 
 using namespace std;
 
@@ -69,16 +69,16 @@ void usage()
     cout << "Usage: tagwriter <fields> <files>" << endl;
     cout << endl;
     cout << "Where the valid fields are:" << endl;
-    cout << "  -t <title>"   << endl;
-    cout << "  -a <artist>"  << endl;
-    cout << "  -A <album>"   << endl;
+    cout << "  -t <title>" << endl;
+    cout << "  -a <artist>" << endl;
+    cout << "  -A <album>" << endl;
     cout << "  -c <comment>" << endl;
-    cout << "  -g <genre>"   << endl;
-    cout << "  -y <year>"    << endl;
-    cout << "  -T <track>"   << endl;
-    cout << "  -R <tagname> <tagvalue>"   << endl;
-    cout << "  -I <tagname> <tagvalue>"   << endl;
-    cout << "  -D <tagname>"   << endl;
+    cout << "  -g <genre>" << endl;
+    cout << "  -y <year>" << endl;
+    cout << "  -T <track>" << endl;
+    cout << "  -R <tagname> <tagvalue>" << endl;
+    cout << "  -I <tagname> <tagvalue>" << endl;
+    cout << "  -D <tagname>" << endl;
     cout << endl;
 
     exit(1);
@@ -86,27 +86,33 @@ void usage()
 
 void checkForRejectedProperties(const TagLib::PropertyMap &tags)
 { // stolen from tagreader.cpp
-    if(tags.size() > 0) {
+    if(tags.size() > 0)
+    {
         unsigned int longest = 0;
-        for(TagLib::PropertyMap::ConstIterator i = tags.begin(); i != tags.end(); ++i) {
-            if(i->first.size() > longest) {
+        for(TagLib::PropertyMap::ConstIterator i = tags.begin(); i != tags.end(); ++i)
+        {
+            if(i->first.size() > longest)
+            {
                 longest = i->first.size();
             }
         }
         cout << "-- rejected TAGs (properties) --" << endl;
-        for(TagLib::PropertyMap::ConstIterator i = tags.begin(); i != tags.end(); ++i) {
-            for(TagLib::StringList::ConstIterator j = i->second.begin(); j != i->second.end(); ++j) {
+        for(TagLib::PropertyMap::ConstIterator i = tags.begin(); i != tags.end(); ++i)
+        {
+            for(TagLib::StringList::ConstIterator j = i->second.begin(); j != i->second.end(); ++j)
+            {
                 cout << left << std::setw(longest) << i->first << " - " << '"' << *j << '"' << endl;
             }
         }
     }
 }
 
-template<typename C>
+template <typename C>
 C replace(C s)
 {
     QVector<QString> deleters;
-    for(uint32_t i=0; i<100; i++) deleters.push_back("(" + QString(i) + ")");
+    for(uint32_t i = 0; i < 100; i++)
+        deleters.push_back("(" + QString(i) + ")");
     deleters.push_back(".mp3");
     deleters.push_back(".MP3");
     deleters.push_back(".mP3");
@@ -118,22 +124,24 @@ C replace(C s)
     deleters.push_back("(320)");
     deleters.push_back("(zaycev.net)");
 
-    QVector<std::pair<QString, QString> > replacers;
+    QVector<std::pair<QString, QString>> replacers;
     replacers.push_back({"  ", " "});
     replacers.push_back({"   ", " "});
     replacers.push_back({"    ", " "});
     replacers.push_back({"     ", " "});
     replacers.push_back({"      ", " "});
-    for(auto &i:deleters)
+    for(auto &i : deleters)
     {
         s.replace(i, "");
     }
-    for(auto &i:replacers)
+    for(auto &i : replacers)
     {
         s.replace(i.first, i.second);
     }
-    while(s[0] == ' ') s.remove(0, 1);
-    while(s[s.size() - 1] == ' ') s.remove(s.size() - 1, 1);
+    while(s[0] == ' ')
+        s.remove(0, 1);
+    while(s[s.size() - 1] == ' ')
+        s.remove(s.size() - 1, 1);
     return s;
 }
 
@@ -144,7 +152,7 @@ int main(int argc, char *argv[])
     TagLib::List<TagLib::FileRef> fileList;
 
     std::string path = "h:/test/";
-    for (const auto & entry : std::experimental::filesystem::directory_iterator(path))
+    for(const auto &entry : std::experimental::filesystem::directory_iterator(path))
     {
         qDebug() << " ";
 
@@ -173,7 +181,7 @@ int main(int argc, char *argv[])
                 qDebug() << "[ERROR]\tToo many '-' symbols";
                 continue;
             }
-            if(s.count("-")+s.count("—") == 0)
+            if(s.count("-") + s.count("—") == 0)
             {
                 qDebug() << "[ERROR]\tNot found '-' symbols";
                 continue;
@@ -189,10 +197,10 @@ int main(int argc, char *argv[])
             std::cout << "Tags:" << tg->title().toWString() << tg->artist().toWString() << std::endl;
             f.file()->save();
         }
-
     }
 
-    while(argc > 0 && isFile(argv[argc - 1])) {
+    while(argc > 0 && isFile(argv[argc - 1]))
+    {
 
         std::cout << ">>" << argv[argc - 1] << std::endl;
 
@@ -211,19 +219,20 @@ int main(int argc, char *argv[])
     if(fileList.isEmpty())
         usage();
 
-    for(int i = 1; i < argc - 1; i += 2) {
-
-        if(isArgument(argv[i]) && i + 1 < argc && !isArgument(argv[i + 1])) {
-
+    for(int i = 1; i < argc - 1; i += 2)
+    {
+        if(isArgument(argv[i]) && i + 1 < argc && !isArgument(argv[i + 1]))
+        {
             char field = argv[i][1];
             TagLib::String value = argv[i + 1];
 
             TagLib::List<TagLib::FileRef>::ConstIterator it;
-            for(it = fileList.begin(); it != fileList.end(); ++it) {
-
+            for(it = fileList.begin(); it != fileList.end(); ++it)
+            {
                 TagLib::Tag *t = (*it).tag();
 
-                switch (field) {
+                switch(field)
+                {
                 case 't':
                     t->setTitle(value);
                     break;
@@ -247,22 +256,27 @@ int main(int argc, char *argv[])
                     break;
                 case 'R':
                 case 'I':
-                    if(i + 2 < argc) {
-                        TagLib::PropertyMap map = (*it).file()->properties ();
-                        if(field == 'R') {
+                    if(i + 2 < argc)
+                    {
+                        TagLib::PropertyMap map = (*it).file()->properties();
+                        if(field == 'R')
+                        {
                             map.replace(value, TagLib::String(argv[i + 2]));
                         }
-                        else {
+                        else
+                        {
                             map.insert(value, TagLib::String(argv[i + 2]));
                         }
                         ++i;
                         checkForRejectedProperties((*it).file()->setProperties(map));
                     }
-                    else {
+                    else
+                    {
                         usage();
                     }
                     break;
-                case 'D': {
+                case 'D':
+                {
                     TagLib::PropertyMap map = (*it).file()->properties();
                     map.erase(value);
                     checkForRejectedProperties((*it).file()->setProperties(map));
