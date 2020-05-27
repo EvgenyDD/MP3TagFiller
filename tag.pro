@@ -29,6 +29,5 @@ TAGLIB_PATH = "$$PWD/taglib-1.11.1"
 include($$TAGLIB_PATH/taglib.pri)
 
 
-
 SOURCES += \
         main.cpp
