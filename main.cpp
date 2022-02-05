@@ -151,7 +151,7 @@ int main(int argc, char *argv[])
 
     TagLib::List<TagLib::FileRef> fileList;
 
-    std::string path = "h:/test/";
+    std::string path = "e:/temp/";
     for(const auto &entry : std::experimental::filesystem::directory_iterator(path))
     {
         qDebug() << " ";
